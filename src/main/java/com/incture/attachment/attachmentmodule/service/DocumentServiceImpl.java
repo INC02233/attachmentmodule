@@ -1,16 +1,26 @@
 package com.incture.attachment.attachmentmodule.service;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.incture.attachment.attachmentmodule.entity.DocumentDo;
@@ -62,6 +72,31 @@ public class DocumentServiceImpl implements DocumentService {
 			return "Exception caught : " + e.getMessage();
 		}
 		
+	}
+
+	@Override
+	public List<DocumentDo> getAllDocuments() {
+		return documentRepository.findAll();
+	}
+
+	@Override
+	public String downloadDocument(HttpServletRequest request, HttpServletResponse response, String fileName) throws IOException{
+		File file = new File(uploadDirectory + "/" +fileName);
+		if(file.exists()) {
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if(mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			return "Image downloaded successfully.";
+		}
+		else {
+			return "File not found.";
+		}
 	}
 
 }

@@ -1,14 +1,13 @@
 package com.incture.attachment.attachmentmodule.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +31,10 @@ public class DocumentController {
 		return "Welcome to Document HUB !";
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/documents")
+	public List<DocumentDo> getAllDocuments() {
+		return documentService.getAllDocuments();
+	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	@ResponseBody
@@ -39,5 +42,11 @@ public class DocumentController {
 		for(int i = 0 ;i<file.length; i++) {
 			documentService.saveTask(document, file[i]);
 		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/download/{fileName:.+}") 
+	public String downloadImages(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("fileName") String fileName) throws IOException {
+		return documentService.downloadDocument(request, response, fileName);
 	}
 }
