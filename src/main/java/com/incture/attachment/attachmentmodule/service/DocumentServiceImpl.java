@@ -35,7 +35,7 @@ public class DocumentServiceImpl implements DocumentService {
 	public static String uploadDirectory = System.getProperty("user.dir") + "/src/main/assets/files";
 
 	@Override
-	public String saveTask(DocumentDo document, MultipartFile file) {
+	public String saveDocument(DocumentDo document, MultipartFile file) {
 		try {
 			// extensions
 			document.setId(UUID.randomUUID().toString().split("-")[0]);

@@ -1,5 +1,6 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://admin:admin@attachmentmodule.evocy8n.mongodb.net/?retryWrites=true&w=majority
+      uri: mongodb+srv://asterik:asterik@attachmentmodule.9qshhwv.mongodb.net/?retryWrites=true&w=majority
       database : attachmentmodule
+      

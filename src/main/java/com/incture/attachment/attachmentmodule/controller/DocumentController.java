@@ -38,9 +38,9 @@ public class DocumentController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	@ResponseBody
-	public void saveTask(DocumentDo document, @RequestParam("file") MultipartFile file[]) {
+	public void saveDocument(DocumentDo document, @RequestParam("file") MultipartFile file[]) {
 		for(int i = 0 ;i<file.length; i++) {
-			documentService.saveTask(document, file[i]);
+			documentService.saveDocument(document, file[i]);
 		}
 	}
 	

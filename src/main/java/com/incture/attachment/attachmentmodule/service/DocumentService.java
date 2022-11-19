@@ -13,7 +13,7 @@ import com.incture.attachment.attachmentmodule.entity.DocumentDo;
 
 public interface DocumentService {
 
-	public String saveTask(DocumentDo document, @RequestParam("file") MultipartFile file);
+	public String saveDocument(DocumentDo document, @RequestParam("file") MultipartFile file);
 
 	public List<DocumentDo> getAllDocuments();
 
