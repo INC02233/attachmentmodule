@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class DocumentServiceImpl implements DocumentService {
 	public String saveTask(DocumentDo document, MultipartFile file) {
 		try {
 			// extensions
+			document.setId(UUID.randomUUID().toString().split("-")[0]);
 			String fileExtensions = ".PNG,.png,.JPG,.jpg,.jpeg,.JPEG";
 			String Multipart_fileName = file.getOriginalFilename();
 			int lastIndex = Multipart_fileName.lastIndexOf('.');

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.incture.attachment.attachmentmodule.entity.DocumentDo;
 
 @Repository
-public interface DocumentRepository extends MongoRepository<DocumentDo, Integer>{
+public interface DocumentRepository extends MongoRepository<DocumentDo, String>{
 
 }

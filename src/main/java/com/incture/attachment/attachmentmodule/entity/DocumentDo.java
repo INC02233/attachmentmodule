@@ -1,5 +1,7 @@
 package com.incture.attachment.attachmentmodule.entity;
 
+import javax.annotation.Generated;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,7 +20,7 @@ import lombok.Setter;
 public class DocumentDo {
 
 	@Id
-	private int id;
+	private String id;
 	private String documentName;
 	private String documentType;
 	private long documentSize;
