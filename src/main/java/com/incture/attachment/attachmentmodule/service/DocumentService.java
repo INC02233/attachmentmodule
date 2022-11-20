@@ -13,9 +13,9 @@ import com.incture.attachment.attachmentmodule.entity.DocumentDo;
 
 public interface DocumentService {
 
-	public String saveDocument(DocumentDo document, @RequestParam("file") MultipartFile file);
+	public String saveDocument(@RequestParam("file") MultipartFile file);
 
 	public List<DocumentDo> getAllDocuments();
 
-	public String downloadDocument(HttpServletRequest request, HttpServletResponse response, String fileName) throws IOException;
+	public String downloadDocument(HttpServletRequest request, HttpServletResponse response, String id) throws IOException;
 }

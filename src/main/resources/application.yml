@@ -1,6 +1,6 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://asterik:asterik@attachmentmodule.9qshhwv.mongodb.net/?retryWrites=true&w=majority
-      database : attachmentmodule
+      uri: mongodb+srv://user:admin@task.un5dmfv.mongodb.net/?retryWrites=true&w=majority
+      database : task
       

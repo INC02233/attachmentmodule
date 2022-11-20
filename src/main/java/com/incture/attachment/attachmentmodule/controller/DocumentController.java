@@ -38,15 +38,15 @@ public class DocumentController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	@ResponseBody
-	public void saveDocument(DocumentDo document, @RequestParam("file") MultipartFile file[]) {
-		for(int i = 0 ;i<file.length; i++) {
-			documentService.saveDocument(document, file[i]);
+	public void saveDocument(@RequestParam("files") MultipartFile files[]) {
+		for(int i = 0 ;i<files.length; i++) {
+			documentService.saveDocument(files[i]);
 		}
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/download/{fileName:.+}") 
+	@RequestMapping(method = RequestMethod.GET, value = "/download/{id}") 
 	public String downloadImages(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("fileName") String fileName) throws IOException {
-		return documentService.downloadDocument(request, response, fileName);
+			@PathVariable("id") String id) throws IOException {
+		return documentService.downloadDocument(request, response, id);
 	}
 }

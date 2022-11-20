@@ -35,38 +35,43 @@ public class DocumentServiceImpl implements DocumentService {
 	public static String uploadDirectory = System.getProperty("user.dir") + "/src/main/assets/files";
 
 	@Override
-	public String saveDocument(DocumentDo document, MultipartFile file) {
+	public String saveDocument(MultipartFile file) {
 		try {
 			// extensions
-			document.setId(UUID.randomUUID().toString().split("-")[0]);
-			String fileExtensions = ".PNG,.png,.JPG,.jpg,.jpeg,.JPEG";
+			DocumentDo document = new DocumentDo();
 			String Multipart_fileName = file.getOriginalFilename();
 			int lastIndex = Multipart_fileName.lastIndexOf('.');
 			String fileType = Multipart_fileName.substring(lastIndex, Multipart_fileName.length());
-
-			if (!fileExtensions.contains(fileType.toLowerCase())) {
-				return "File extension not supported. (should contain only .PNG,.png,.JPG,.jpg,.jpeg,.JPEG)";
-			} else {
+			String fileOrgName = Multipart_fileName.substring(0, lastIndex);
+//			if (!fileExtensions.contains(fileType.toLowerCase())) {
+//				return "File extension not supported. (should contain only .PNG,.png,.JPG,.jpg,.jpeg,.JPEG)";
+//			} else {
 				DateFormat dateFormatter = new SimpleDateFormat("yyyymmddhhmmss");
 				String currentDateTime = dateFormatter.format(new Date());
 				String fileName = "DOC_" + currentDateTime
-						+ file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
+						+ file.getOriginalFilename().substring(file.getOriginalFilename().length() - fileType.length());
 				Path fileNameAndPath = Paths.get(uploadDirectory, fileName);
+				
+				
 				try {
 					Files.write(fileNameAndPath, file.getBytes());
 				} catch (IOException e) {
 					e.printStackTrace();
 					e.getMessage();
 				}
-				
 				long fileSize = Files.size(fileNameAndPath) / 1024;
-				document.setDocumentName(fileName);
+				if(fileSize > 10240) {
+					System.out.println("Maximum File size not allowed.");
+					return "Maximum File size not allowed. ";
+				}
+				document.setDocumentId(fileName);
+				document.setDocumentOrgName(fileOrgName);
 				document.setDocumentType(fileType);
 				document.setDocumentSize(fileSize);
 				documentRepository.save(document);
 
 				return "Document saved successfully.";
-			}
+//			}
 		} catch(Exception e) {
 			e.printStackTrace();
 			return "Exception caught : " + e.getMessage();
@@ -80,8 +85,8 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 
 	@Override
-	public String downloadDocument(HttpServletRequest request, HttpServletResponse response, String fileName) throws IOException{
-		File file = new File(uploadDirectory + "/" +fileName);
+	public String downloadDocument(HttpServletRequest request, HttpServletResponse response, String id) throws IOException{
+		File file = new File(uploadDirectory + "/" +id);
 		if(file.exists()) {
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if(mimeType == null) {

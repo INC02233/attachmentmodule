@@ -18,8 +18,8 @@ import lombok.Setter;
 public class DocumentDo {
 
 	@Id
-	private String id;
-	private String documentName;
+	private String documentId;
+	private String documentOrgName;
 	private String documentType;
 	private long documentSize;
 	

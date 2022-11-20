@@ -1,0 +1,7 @@
+applications:
+- name: attachmentmodule
+  path: ./target/attachmentmodule-0.0.1-SNAPSHOT.jar
+  buildpack: java_buildpack 
+  host: attachmentmodule
+  domain: cfapps.ap21.hana.ondemand.com
+
