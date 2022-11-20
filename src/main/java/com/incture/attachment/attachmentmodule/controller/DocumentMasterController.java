@@ -7,6 +7,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.HttpHeaders;
@@ -47,9 +48,9 @@ public class DocumentMasterController {
 			DocumentMaster dto = new DocumentMaster();
 			dto.setId(fs.getObjectId().toString());
 			dto.setFilename(fs.getFilename());
-			dto.setFileType(fs.getFilename().substring(fs.getFilename().lastIndexOf('.'), fs.getFilename().length()));
+			dto.setFileType(fs.getFilename().substring(fs.getFilename().lastIndexOf('.') + 1, fs.getFilename().length()));
 			dto.setFileSize(String.valueOf(fs.getLength()));
-			
+			dto.setUpload_date(fs.getUploadDate());
 			documentMaster.add(dto);
 		}
 		
@@ -74,4 +75,16 @@ public class DocumentMasterController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + documentMaster.getFilename() + "\"")
                 .body(new ByteArrayResource(documentMaster.getFile()));
     }
+	
+	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
+	public String deleteDocument(@PathVariable String id) {
+		try {
+			gridfs.delete(new Query(Criteria.where("_id").is(id)));
+			return "File Deleted Successfully";
+		} catch(Exception err) {
+			return "Could not delete : " + err.getMessage();
+		}
+		
+	}
+	
 }

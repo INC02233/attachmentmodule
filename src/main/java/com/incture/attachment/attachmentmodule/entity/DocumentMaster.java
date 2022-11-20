@@ -1,5 +1,7 @@
 package com.incture.attachment.attachmentmodule.entity;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -18,5 +20,6 @@ public class DocumentMaster {
     private String fileType;
     private String fileSize;
     private byte[] file;
+    private Date upload_date;
     
 }
