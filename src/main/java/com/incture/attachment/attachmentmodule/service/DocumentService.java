@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.incture.attachment.attachmentmodule.entity.DocumentDo;
+import com.incture.attachment.attachmentmodule.entity.DocumentMaster;
 
 public interface DocumentService {
 
@@ -18,4 +19,8 @@ public interface DocumentService {
 	public List<DocumentDo> getAllDocuments();
 
 	public String downloadDocument(HttpServletRequest request, HttpServletResponse response, String id) throws IOException;
+
+	public String addFile(MultipartFile file) throws IOException;
+
+	public DocumentMaster downloadFile(String id) throws IOException;
 }

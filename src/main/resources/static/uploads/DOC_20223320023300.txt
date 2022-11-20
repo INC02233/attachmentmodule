@@ -1,0 +1,28 @@
+-> git status
+
+-> git add .
+
+-> git commit -M "message here"
+
+-> git push origin master/dev/qa/prod
+
+
+
+--------------
+
+switch between branches-
+
+-> git checkout -b dev
+
+pull data from the branch 
+
+-> git pull
+
+quite merge 
+
+-> git merge --quit
+
+
+----------------
+exit from vim
+-> :qa!

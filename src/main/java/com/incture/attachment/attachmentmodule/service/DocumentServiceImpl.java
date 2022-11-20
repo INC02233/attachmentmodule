@@ -13,18 +13,26 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsOperations;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.incture.attachment.attachmentmodule.entity.DocumentDo;
+import com.incture.attachment.attachmentmodule.entity.DocumentMaster;
+import com.incture.attachment.attachmentmodule.repository.DocumentMasterRepository;
 import com.incture.attachment.attachmentmodule.repository.DocumentRepository;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.client.gridfs.model.GridFSFile;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -32,8 +40,20 @@ public class DocumentServiceImpl implements DocumentService {
 	@Autowired
 	private DocumentRepository documentRepository;
 	
-	public static String uploadDirectory = System.getProperty("user.dir") + "/src/main/assets/files";
+	@Autowired
+	private DocumentMasterRepository documentMasterRepository;
+	
+	@Autowired
+	private GridFsTemplate gridfs;
 
+	@Autowired
+	private GridFsOperations operations;
+	
+//	public final String uploadDirectory = new ClassPathResource("static/files/").getFile().getAbsolutePath();
+	public static String uploadDirectory = new File("src\\main\\resources\\static\\uploads").getAbsolutePath()+"\\";
+	public DocumentServiceImpl() throws IOException {
+		
+	}
 	@Override
 	public String saveDocument(MultipartFile file) {
 		try {
@@ -86,7 +106,8 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Override
 	public String downloadDocument(HttpServletRequest request, HttpServletResponse response, String id) throws IOException{
-		File file = new File(uploadDirectory + "/" +id);
+		Path fileNameAndPath = Paths.get(uploadDirectory, id);
+		File file = new File(fileNameAndPath+"");
 		if(file.exists()) {
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if(mimeType == null) {
@@ -103,5 +124,31 @@ public class DocumentServiceImpl implements DocumentService {
 			return "File not found.";
 		}
 	}
+	
+	
+	public String addFile(MultipartFile file) throws IOException {
+		DBObject metadata = new BasicDBObject();
+		metadata.put("fileSize", file.getSize());
+		Object fileID = gridfs.store(file.getInputStream(), file.getOriginalFilename(), file.getContentType(),
+				metadata);
+		return fileID.toString();
+	}
+	
+	public DocumentMaster downloadFile(String id) throws IOException {
+
+        GridFSFile gridFSFile = gridfs.findOne( new Query(Criteria.where("_id").is(id)) );
+
+        DocumentMaster documentMaster = new DocumentMaster();
+
+        if (gridFSFile != null && gridFSFile.getMetadata() != null) {
+        	documentMaster.setFilename( gridFSFile.getFilename() );
+        	documentMaster.setFileType( gridFSFile.getMetadata().get("_contentType").toString() );
+        	documentMaster.setFileSize( gridFSFile.getMetadata().get("fileSize").toString() );
+        	documentMaster.setFile(IOUtils.toByteArray(operations.getResource(gridFSFile).getInputStream()) );
+        }
+
+        return documentMaster;
+    }
+
 
 }
